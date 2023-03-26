@@ -1,0 +1,13 @@
+name = "business_pulse"
+main = "build/worker/shim.mjs"
+compatibility_date = "2022-01-20"
+
+kv_namespaces = [
+  { binding = "business_pulse", id = "061e0daee84f4664a501e7ba413c1a82", preview_id = "061e0daee84f4664a501e7ba413c1a82" }
+]
+
+[vars]
+WORKERS_RS_VERSION = "0.0.11"
+
+[build]
+command = "cargo install -q worker-build --version 0.0.9 && worker-build --release"
