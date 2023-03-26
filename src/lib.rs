@@ -3,7 +3,7 @@ mod utils;
 
 use worker::*;
 use reqwest;
-use model::ApiResponse;
+use model::{ApiResponse, Business};
 
 
 fn log_request(req: &Request) {
@@ -17,7 +17,7 @@ fn log_request(req: &Request) {
 }
 
 
-async fn get_business_by_business_id_from_kv_or_fetch(business_id: &str, kv: &kv::KvStore) -> Result<String> {
+async fn get_business_by_business_id_from_kv_or_fetch(business_id: &str, kv: &kv::KvStore) -> Result<Business> {
     let api_response = match kv.get(business_id).text().await? {
         Some(cache_value) => cache_value,
         None => {
@@ -43,14 +43,38 @@ async fn get_business_by_business_id_from_kv_or_fetch(business_id: &str, kv: &kv
         }
     };
 
-    Ok(api_response)
+    let api_response: ApiResponse = serde_json::from_str(&api_response)?;
+    
+    let business = match api_response.results.first() {
+        Some(business) => business.clone(),
+        None => Business {
+            businessId: "No company found with business id".to_string(),
+            name: "No company found with business id".to_string(),
+            registrationDate: "No company found with business id".to_string(),
+            companyForm: "No company found with business id".to_string(),
+            detailsUri: None,
+            liquidations: vec![],
+            names: vec![],
+            auxiliaryNames: vec![],
+            addresses: vec![],
+            companyForms: vec![],
+            businessLines: vec![],
+            languages: vec![],
+            registedOffices: vec![],
+            contactDetails: vec![],
+            registeredEntries: vec![],
+            businessIdChanges: vec![]
+        },
+    };
+
+    Ok(business)
 }
 
 fn map_body_to_response(body: String) -> Result<Response> {
-    let response = Response::ok(body)?;
     let mut headers = Headers::new();
-
     headers.set("Content-Type", "application/json")?;
+
+    let response = Response::ok(body)?;
 
     Ok(response.with_headers(headers))
 }
@@ -73,13 +97,9 @@ pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Respo
 
             let kv = ctx.kv("business_pulse")?;
 
-            let business_api_response = get_business_by_business_id_from_kv_or_fetch(business_id, &kv).await?;
+            let business = get_business_by_business_id_from_kv_or_fetch(business_id, &kv).await?;
 
-            let api_response: ApiResponse = serde_json::from_str(&business_api_response)?;
-
-            let results = serde_json::to_string(&api_response.results)?;
-
-            map_body_to_response(results)
+            map_body_to_response(serde_json::to_string(&business)?)
         })
         .run(req, env)
         .await

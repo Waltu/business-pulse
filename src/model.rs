@@ -2,13 +2,13 @@ use std::option::Option;
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct ApiResponse {
-    r#type: String,
-    version: String,
-    totalResults: i32,
-    resultsFrom: u32,
-    previousResultsUri: Option<String>,
-    nextResultsUri: Option<String>,
-    exceptionNoticeUri: Option<String>,
+    pub r#type: String,
+    pub version: String,
+    pub totalResults: i32,
+    pub resultsFrom: u32,
+    pub previousResultsUri: Option<String>,
+    pub nextResultsUri: Option<String>,
+    pub exceptionNoticeUri: Option<String>,
     pub results: Vec<Business>,
 }
 
@@ -16,24 +16,24 @@ pub struct ApiResponse {
 pub struct Business {
     pub businessId: String,
     pub name: String,
-    registrationDate: String,
-    companyForm: String,
-    detailsUri: Option<String>,
-    liquidations: Vec<String>,
-    names: Vec<Name>,
-    auxiliaryNames: Vec<AuxiliaryName>,
-    addresses: Vec<Address>,
-    companyForms: Vec<CompanyForm>,
-    businessLines: Vec<BusinessLine>,
-    languages: Vec<Language>,
-    registedOffices: Vec<RegistedOffice>,
-    contactDetails: Vec<ContactDetail>,
-    registeredEntries: Vec<RegisteredEntry>,
-    businessIdChanges: Vec<String>,
+    pub registrationDate: String,
+    pub companyForm: String,
+    pub detailsUri: Option<String>,
+    pub liquidations: Vec<String>,
+    pub names: Vec<Name>,
+    pub auxiliaryNames: Vec<AuxiliaryName>,
+    pub addresses: Vec<Address>,
+    pub companyForms: Vec<CompanyForm>,
+    pub businessLines: Vec<BusinessLine>,
+    pub languages: Vec<Language>,
+    pub registedOffices: Vec<RegistedOffice>,
+    pub contactDetails: Vec<ContactDetail>,
+    pub registeredEntries: Vec<RegisteredEntry>,
+    pub businessIdChanges: Vec<String>,
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-struct Name {
+pub struct Name {
     order: u32,
     version: u32,
     name: String,
@@ -43,7 +43,7 @@ struct Name {
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-struct AuxiliaryName {
+pub struct AuxiliaryName {
     order: u32,
     version: u32,
     name: String,
@@ -53,7 +53,7 @@ struct AuxiliaryName {
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-struct Address {
+pub struct Address {
     careOf: Option<String>,
     street: String,
     postCode: String,
@@ -68,7 +68,7 @@ struct Address {
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-struct CompanyForm {
+pub struct CompanyForm {
     version: u32,
     name: String,
     r#type: Option<String>,
@@ -79,7 +79,7 @@ struct CompanyForm {
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-struct BusinessLine {
+pub struct BusinessLine {
     order: u32,
     version: u32,
     code: String,
@@ -91,7 +91,7 @@ struct BusinessLine {
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-struct Language {
+pub struct Language {
     version: u32,
     name: String,
     registrationDate: String,
@@ -101,7 +101,7 @@ struct Language {
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-struct RegistedOffice {
+pub struct RegistedOffice {
     order: u32,
     version: u32,
     name: String,
@@ -112,7 +112,7 @@ struct RegistedOffice {
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-struct ContactDetail {
+pub struct ContactDetail {
     version: u32,
     value: String,
     r#type: String,
@@ -123,7 +123,7 @@ struct ContactDetail {
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-struct RegisteredEntry {
+pub struct RegisteredEntry {
     authority: u32,
     register: u32,
     status: u32,
