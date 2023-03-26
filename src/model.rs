@@ -1,6 +1,6 @@
 use std::option::Option;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct ApiResponse {
     r#type: String,
     version: String,
@@ -9,13 +9,13 @@ pub struct ApiResponse {
     previousResultsUri: Option<String>,
     nextResultsUri: Option<String>,
     exceptionNoticeUri: Option<String>,
-    results: Vec<Business>,
+    pub results: Vec<Business>,
 }
 
-#[derive(Debug)]
-struct Business {
-    businessId: String,
-    name: String,
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct Business {
+    pub businessId: String,
+    pub name: String,
     registrationDate: String,
     companyForm: String,
     detailsUri: Option<String>,
@@ -32,7 +32,7 @@ struct Business {
     businessIdChanges: Vec<String>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 struct Name {
     order: u32,
     version: u32,
@@ -42,7 +42,7 @@ struct Name {
     source: u32,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 struct AuxiliaryName {
     order: u32,
     version: u32,
@@ -52,7 +52,7 @@ struct AuxiliaryName {
     source: u32,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 struct Address {
     careOf: Option<String>,
     street: String,
@@ -67,7 +67,7 @@ struct Address {
     source: u32,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 struct CompanyForm {
     version: u32,
     name: String,
@@ -78,7 +78,7 @@ struct CompanyForm {
     source: u32,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 struct BusinessLine {
     order: u32,
     version: u32,
@@ -90,7 +90,7 @@ struct BusinessLine {
     source: u32,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 struct Language {
     version: u32,
     name: String,
@@ -100,7 +100,7 @@ struct Language {
     source: u32,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 struct RegistedOffice {
     order: u32,
     version: u32,
@@ -111,7 +111,7 @@ struct RegistedOffice {
     source: u32,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 struct ContactDetail {
     version: u32,
     value: String,
@@ -122,7 +122,7 @@ struct ContactDetail {
     source: u32,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 struct RegisteredEntry {
     authority: u32,
     register: u32,

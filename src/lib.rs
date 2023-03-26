@@ -1,9 +1,10 @@
 mod model;
+mod utils;
 
 use worker::*;
 use reqwest;
+use model::ApiResponse;
 
-mod utils;
 
 fn log_request(req: &Request) {
     console_log!(
@@ -14,6 +15,7 @@ fn log_request(req: &Request) {
         req.cf().region().unwrap_or_else(|| "unknown region".into())
     );
 }
+
 
 #[event(fetch, respond_with_errors)]
 pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Response> {
@@ -32,8 +34,8 @@ pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Respo
 
             let kv = ctx.kv("business_pulse")?;
 
-            let business = match kv.get(business_id).text().await? {
-                Some(business) => business,
+            let business_api_response = match kv.get(business_id).text().await? {
+                Some(cache_value) => cache_value,
                 None => {
                     let client = reqwest::Client::new();
 
@@ -42,20 +44,24 @@ pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Respo
                         .send()
                         .await;
 
-                    let business = match response {
+                    let api_response = match response {
                         Ok(res) => res.text().await.unwrap(),
                         Err(_) => "No company found with business id".to_string(),
                     };
 
                     const ONE_DAY_SECONDS: u64 = 86400;
     
-                    kv.put(business_id, business.clone())?.expiration_ttl(ONE_DAY_SECONDS).execute().await?;
-
-                    business
+                    kv.put(business_id, api_response.clone())?.expiration_ttl(ONE_DAY_SECONDS).execute().await?;
+                    
+                    api_response
                 }
             };
 
-            let response = Response::ok(business)?;
+            let api_response: ApiResponse = serde_json::from_str(&business_api_response)?;
+
+            let results = serde_json::to_string(&api_response.results).unwrap();
+
+            let response = Response::ok(results)?;
             let mut headers = Headers::new();
 
             headers.set("Content-Type", "application/json")?;
