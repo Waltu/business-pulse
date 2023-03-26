@@ -2,7 +2,6 @@ mod model;
 
 use worker::*;
 use reqwest;
-use model::ApiResponse;
 
 mod utils;
 
@@ -48,7 +47,9 @@ pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Respo
                         Err(_) => "No company found with business id".to_string(),
                     };
 
-                    kv.put(business_id, business.clone())?.execute().await?;
+                    const ONE_DAY_SECONDS: u64 = 86400;
+    
+                    kv.put(business_id, business.clone())?.expiration_ttl(ONE_DAY_SECONDS).execute().await?;
 
                     business
                 }
